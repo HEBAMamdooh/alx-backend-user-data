@@ -12,8 +12,10 @@ from user import Base, User
 
 VALID_FIELDS = {"id", "email", "hashed_password", "session_id", "reset_token"}
 
+
 class DB:
-    """DB class to interact with the database
+    """
+    DB class to interact with the database
     """
 
     def __init__(self) -> None:
@@ -45,7 +47,7 @@ class DB:
             User: The newly created User object.
         """
         if not email or not hashed_password:
-            return        
+            return
         new_user = User(email=email, hashed_password=hashed_password)
         self._session.add(new_user)
         self._session.commit()
