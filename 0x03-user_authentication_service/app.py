@@ -2,7 +2,7 @@
 """
 Flask app for the authentication service.
 """
-from flask import Flask, request, jsonify, abort, make_response
+from flask import Flask, request, jsonify, abort, make_response, redirect
 from auth import Auth
 
 app = Flask(__name__)
@@ -52,6 +52,8 @@ def profile():
     Get user profile by session ID.
     """
     session_id = request.cookies.get("session_id")
+    if not session_id:
+        abort(403)
     user = AUTH.get_user_from_session_id(session_id)
     if user is None:
         abort(403)
