@@ -9,6 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 # Create the base class for the model
 Base = declarative_base()
 
+
 class User(Base):
     """
     SQLAlchemy User model for the `users` table.
@@ -20,6 +21,7 @@ class User(Base):
     hashed_password = Column(String(250), nullable=False)
     session_id = Column(String(250), nullable=True)
     reset_token = Column(String(250), nullable=True)
+
 
 # Example engine setup for testing (not part of production code)
 if __name__ == "__main__":
