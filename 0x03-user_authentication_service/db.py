@@ -5,7 +5,8 @@ DB module
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import InvalidRequestError, NoResultFound
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
 from user import Base, User
 
@@ -46,8 +47,6 @@ class DB:
         Returns:
             User: The newly created User object.
         """
-        if not email or not hashed_password:
-            return
         new_user = User(email=email, hashed_password=hashed_password)
         self._session.add(new_user)
         self._session.commit()
@@ -56,24 +55,39 @@ class DB:
 
     def find_user_by(self, **kwargs) -> User:
         """
-        find_user_by.
+        Find a user by arbitrary fields.
+
+        Args:
+            **kwargs: Arbitrary field-value pairs to search for.
+
+        Returns:
+            User: The user found in the database.
+
+        Raises:
+            InvalidRequestError: If the input fields are invalid.
+            NoResultFound: If no user is found.
         """
         if not kwargs or any(x not in VALID_FIELDS for x in kwargs):
             raise InvalidRequestError
-        session = self._session
         try:
-            return session.query(User).filter_by(**kwargs).one()
+            return self._session.query(User).filter_by(**kwargs).one()
         except Exception:
             raise NoResultFound
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """
-        update_user.
+        Update a user's attributes in the database.
+
+        Args:
+            user_id (int): The ID of the user to update.
+            **kwargs: Fields to update and their new values.
+
+        Raises:
+            ValueError: If one of the fields is invalid.
         """
-        session = self._session
         user = self.find_user_by(id=user_id)
         for k, v in kwargs.items():
             if k not in VALID_FIELDS:
                 raise ValueError
             setattr(user, k, v)
-        session.commit()
+        self._session.commit()
