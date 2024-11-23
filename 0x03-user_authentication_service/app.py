@@ -2,7 +2,7 @@
 """
 Flask app for the authentication service.
 """
-from flask import Flask, request, jsonify, abort, make_response, redirect
+from flask import Flask, request, jsonify, abort, make_response
 from auth import Auth
 
 app = Flask(__name__)
