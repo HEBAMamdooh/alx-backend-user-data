@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" 
+"""
 Authentication module.
 """
 
@@ -24,6 +24,7 @@ def _hash_password(password: str) -> bytes:
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt)
 
+
 def _generate_uuid() -> str:
     """
     _generate_uuid.
@@ -35,7 +36,6 @@ class Auth:
     """
     Auth class to interact with the authentication database.
     """
-
 
     def __init__(self):
         self._db = DB()
@@ -60,7 +60,8 @@ class Auth:
         except NoResultFound:
             # User doesn't exist, proceed to create one
             hashed_password = _hash_password(password)
-            new_user = self._db.add_user(email, hashed_password.decode('utf-8'))
+            new_user = self._db.add_user(
+                email, hashed_password.decode('utf-8'))
             return new_user
 
     def valid_login(self, email: str, password: str) -> bool:
